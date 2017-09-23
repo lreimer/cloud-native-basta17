@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
-namespace cloud_native_basta17
+namespace QAware.OSS
 {
     public class Program
     {
