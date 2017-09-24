@@ -30,7 +30,7 @@ services:
         - config-server
       depends_on:
         - eureka
-        - eureka-server
+        - config-server
       ports:
         - "5000:5000"
       networks:

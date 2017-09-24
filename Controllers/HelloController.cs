@@ -1,14 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace QAware.OSS.Controllers
 {
     [Route("api/[controller]")]
     public class HelloController : Controller
     {
+		private IConfigurationRoot configuration;
+
+		public HelloController(IConfigurationRoot configuration)
+		{
+			this.configuration = configuration;
+		}
+
         [HttpGet]
         public virtual IActionResult Get()
         {
-            return this.Ok("Hello BASTA! 2017");
+            string message = configuration["message"];
+            return this.Ok(message == null ? "Hello BASTA 2017!" : message);
         }
     }
 }
