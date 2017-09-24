@@ -17,6 +17,7 @@
     <PackageReference Include="Steeltoe.Management.Endpoint.Info" Version="1.1.0" />
     <PackageReference Include="Steeltoe.Management.Endpoint" Version="1.1.0" />
     <PackageReference Include="Steeltoe.Management.Endpoint.Health" Version="1.1.0" />
+    <PackageReference Include="Steeltoe.Discovery.Client" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
