@@ -2,7 +2,28 @@ language: csharp
 mono: none
 dotnet: 1.0.4
 dist: trusty
+
+services:
+  - docker
+
+env:
+  global:
+    - secure: PLBKMrZdKCLNO8ELcAK/3m1ZCaCjeD4+Zdeadukd0SMfyt+/uiLfmNSF1y5II55NJo9WAnTn9P+YM1HwfUu+56QvNR+aBsRC7hNymcBdRaAEWzWQxsz20W8S3/cQiIjjOuK2E4hvrD+4sgNjudA6aQB5fbXF82Y17IS19w8wMAIpzFMW2Yo89Apve7+pjydhR2EUtW+4xNj6Hbbs0JHPoSxNERolcynq/7O8a4ki7arfHPxLsVWkKAaeRIvxHbr33m8cNgwB7a5rZpKuZv+XMvvxv0/x6kqoW0lIVUeDPxQO6UVVbi9NtBqyTTUXuJsIZdrBQK46q/HhW/Q8Ulw+/iUx7V42eckhrAJu/AGWkUtW9l3tWTvvXkA/gFyzeY7aQbl5QUw5DIH2QQPgxExSNTGYE8wjjzs5sdHLx1P/SZ6jXvLLgHPHsLDVJLJXRSk8GbLoozt6StGC4Qcl5B/YvLp8ThA/KYemw52RISYFu0M3JdjoY4wEOXHIUdyDInkCsv3yjgUJ7HDA45KoDzIl2ASvHPHVP1wpfmygtOMXhv4KbuXL4cgo1DwukRG6JzjXuBQq3SkV5H+Ub0sk3b86shZErw5qjBjTBHWJG+M30LPYmUWyCe6/8TfgCa2yIUrrF1+f6/JOL9LHGvMUE0VipNlRJgc/+/JeIxYVBDFwTkY=
+    - secure: X+aVjG9WkRY52e/Xbkj93clinwcXsSGrlBUNhe7l1VDyN8xPk2DoaoKw4KTJdhgz7C7lam43Ynx2EqVUQ2oioMqDF1B/kpFpxqLGIqWLbX07I+zKL+xwlUeCGjmWtIDuWAaaC/Mw6JyyppUg3lz6to+muF1o0901qoNSWu8cZAFBgJULIkT1jr/aRPLnxGQkg8xmRKVuxOyJAHmGtU4GXbUsQuvGL8Z/NmWqd+JhrJGh66zuuASf3s2PpKgbW0DkjjwMfj+8/AeUlkoyu+k9EoOxGGh3zqAH/nmZS/MKMJ3OoX/H+g4PLVfCl1I8GCSxupw/kdIuaUdNC23pbCl4fb9ExC+Ui4SjznAdGanvEFQzGl2f5/nuI816P0NMFm9v8OWcf+RsW4JtsaRvox33KKNI+vBwTqy/ZiJ4+95j8dEGocN/c12ErGOstfEH6cqYvfzou/esrKoeMDqNEJer9M1hVGJopJS1vXcPEjYhE/7iqe3hHbrLPCgGXvmUW8MkF4RwdHO77YgmgRCXdCtLdHbsG/Srtth7S69JpLTgbUM62c50hSFJyqlbTSLVTmFUaiyj9zMXVYhFK+hDvqzKUI6DLt2fQRpyEkkpMSTrkl6IDtJFHMBhZExAqA9pWvIO6qiconPB+xEOCHHc7TzJ8oVAUlgH2Nbh6irsIUZYlYE=
+    - secure: msV6zTOgzSvawF/JeRdavPJ7ev2fdvdflRZpKSokDOJjE96bckzpIyJNguwOEegZlg+xkqsJV9H8+JQf3P6wlDygrdFFSUy2toChz+P3qKBM/xYKYnjOGpisWgkWHp14FvvAofszZ0QZ8pr/No8usy/38MyekCWwDSK84P9rq5gm2k588OBWXUxQwAsWwtEWNkYGoDDRxNGHiuo2dU4YlArwvwkLyZyZE8wprRLe6hpgnMMtpxGiaKZSBiAHON+bx/FGXmbhI95/xHANyW1jQsbUfA46waDPSyem0q9QJnqfo3dOJPPtPnJfdHgoBrsYoLTrlWRBwyYZ40Wh5bQtmyE9BdRRYOMowDcTcT5R4wKGChly4h1IOMuHyjwA7vccWcEbj3e0Amm3xPlYHS6XyBkzVUOZBSj4OHNnzvf7QnKpBOX2/rIELfvzkS3ZR+BEeYzlH2ZICTpwcj0x5PlQc9xLuT/dTTPkf4op6ZovImUU627lZbQeMBw9udowagOVI7eoYmanYJumPb9tmurVSIS1FCqvz/8KGoRaJOcS8EKiNmgJ5V9Zs8zujMpxCOTVUmzax2lzNGFxGLKtAiOpSCQnVUTRtP+25tURU7wMDx9TvYrVSG+ZwTudyMsAB4/YS7YQepTbFKg4aRNqp1c6dOCj4fTLHaAfVcMQO+dtWeY=
+    - COMMIT=${TRAVIS_COMMIT::8}
+
 script:
- - dotnet restore
- - dotnet build
- - dotnet publish -c Release -o out
+  - dotnet restore
+  - dotnet build
+  - dotnet publish -c Release -o out
+
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=lreimer/cloud-native-basta17
+  - export TAG=`if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker tag $REPO:$COMMIT $REPO:latest
+  - docker push $REPO
