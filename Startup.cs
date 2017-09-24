@@ -51,6 +51,7 @@ namespace QAware.OSS
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            // activate /health and /info endpoints
             app.UseHealthActuator();
             app.UseInfoActuator();
 
