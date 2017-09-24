@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +7,7 @@ using QAware.OSS.Admin;
 using Steeltoe.Management.Endpoint.Health;
 using Steeltoe.Management.Endpoint.Health.Contributor;
 using Steeltoe.Management.Endpoint.Info;
-using Steeltoe.Management.Endpoint.Info.Contributor;
+using Steeltoe.Discovery.Client;
 
 namespace QAware.OSS
 {
@@ -39,7 +35,10 @@ namespace QAware.OSS
 
             // Add custom info contributor
             services.AddSingleton<IInfoContributor, InfoContributor>();
-            services.AddInfoActuator(Configuration);
+			services.AddInfoActuator(Configuration);
+
+            // Add Steeltoe Discovery Client service
+			services.AddDiscoveryClient(Configuration); 
 
             // Add framework services.
             services.AddMvc();
@@ -58,6 +57,9 @@ namespace QAware.OSS
             app.UseDeveloperExceptionPage();
 
             app.UseMvc();
+
+			// Use the Steeltoe Discovery Client service
+			app.UseDiscoveryClient();
         }
     }
 }
