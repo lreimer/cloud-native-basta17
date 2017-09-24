@@ -1,0 +1,13 @@
+version: "3"
+services:
+
+    cloud-native-basta17:
+      build: .
+      image: "cloud-native-basta17"
+      ports:
+        - "5000:5000"
+      networks:
+        - backend
+
+networks:
+  backend:

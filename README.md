@@ -26,7 +26,21 @@ $ dotnet run
 $ http GET localhost:5000/api/hello
 $ http GET localhost:5000/admin/health
 $ http GET localhost:5000/admin/info
-``` 
+```
+
+## Containerizing
+
+```bash
+$ dotnet publish -c Release -o out
+
+$ docker build -t cloud-native-basta17 .
+$ docker run -it -p 5000:5000 cloud-native-basta17
+```
+
+Alternatively, you may use Docker Compose to build and run the microservice in one command:
+```bash
+$ docker-compose up --build
+```
 
 ## References
 
