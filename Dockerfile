@@ -6,4 +6,6 @@ COPY out .
 
 EXPOSE 5000
 
-ENTRYPOINT ["dotnet", "cloud-native-basta17.dll", "--server.urls", "http://0.0.0.0:5000"]
+ENTRYPOINT ["dotnet", "cloud-native-basta17.dll"]
+
+CMD ["--server.urls", "http://0.0.0.0:5000"]

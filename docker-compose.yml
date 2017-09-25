@@ -25,6 +25,7 @@ services:
     cloud-native-basta17:
       build: .
       image: "cloud-native-basta17"
+      command: --server.urls http://0.0.0.0:5050
       environment:
         EUREKA_HOST: eureka
         EUREKA_PORT: 8761
@@ -35,7 +36,7 @@ services:
         - eureka
         - config-server
       ports:
-        - "5000:5000"
+        - "5000:5050"
       networks:
         - backend
 
