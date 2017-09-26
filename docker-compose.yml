@@ -10,8 +10,6 @@ services:
 
     config-server:
       image: "lreimer/cloud-native-config"
-      links:
-        - eureka
       depends_on:
         - eureka
       environment:
@@ -22,12 +20,25 @@ services:
       networks:
         - backend
 
+    zuul:
+      image: "lreimer/cloud-native-zuul"
+      depends_on:
+        - eureka
+        - config-server
+      environment:
+        EUREKA_HOST: eureka
+        EUREKA_PORT: 8761
+      ports:
+        - "8765:8765"
+      networks:
+        - backend
+
     cloud-native-basta17:
       build: .
       image: "cloud-native-basta17"
-      links:
-        - eureka
-        - config-server
+      environment:
+        EUREKA_HOST: eureka
+        EUREKA_PORT: 8761
       depends_on:
         - eureka
         - config-server
