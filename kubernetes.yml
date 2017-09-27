@@ -17,7 +17,7 @@ metadata:
   name: eureka
 spec:
   replicas: 1
-  minReadySeconds: 30
+  minReadySeconds: 60
   template:
     metadata:
       labels:
@@ -30,23 +30,12 @@ spec:
         resources:
           requests:
             memory: "128Mi"
-            cpu: "125m"
-          limits:
-            memory: "256Mi"
             cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         ports:
         - containerPort: 8761
-        livenessProbe:
-          httpGet:
-            path: /admin/health
-            port: 8761
-          initialDelaySeconds: 60
-          timeoutSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /admin/info
-            port: 8761
-          timeoutSeconds: 30
 ---
 apiVersion: v1
 kind: Service
@@ -67,7 +56,7 @@ metadata:
   name: config-server
 spec:
   replicas: 1
-  minReadySeconds: 30
+  minReadySeconds: 60
   template:
     metadata:
       labels:
@@ -80,23 +69,54 @@ spec:
         resources:
           requests:
             memory: "128Mi"
-            cpu: "125m"
-          limits:
-            memory: "256Mi"
             cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         ports:
         - containerPort: 8888
-        livenessProbe:
-          httpGet:
-            path: /admin/health
-            port: 8888
-          initialDelaySeconds: 90
-          timeoutSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /admin/info
-            port: 8888
-          timeoutSeconds: 30
+        env:
+        - name: EUREKA_HOST
+          value: eureka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zuul
+  labels:
+    app: zuul
+spec:
+  type: NodePort
+  ports:
+  - port: 8765
+  selector:
+    app: zuul
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zuul
+spec:
+  replicas: 1
+  minReadySeconds: 60
+  template:
+    metadata:
+      labels:
+        app: zuul
+    spec:
+      containers:
+      - name: zuul
+        image: "lreimer/cloud-native-zuul"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8765
         env:
         - name: EUREKA_HOST
           value: eureka
@@ -120,7 +140,7 @@ metadata:
   name: cloud-native-basta17
 spec:
   replicas: 2
-  minReadySeconds: 30
+  minReadySeconds: 60
   template:
     metadata:
       labels:
