@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using QAware.OSS.Admin;
+using QAware.OSS.DataAccess;
 using Steeltoe.Management.Endpoint.Health;
 using Steeltoe.Management.Endpoint.Health.Contributor;
 using Steeltoe.Management.Endpoint.Info;
@@ -40,6 +41,8 @@ namespace QAware.OSS
             // Add custom info contributor
             services.AddSingleton<IInfoContributor, InfoContributor>();
             services.AddInfoActuator(Configuration);
+
+            services.AddSingleton<IBooksRepository, MemoryBooksRepository>();
 
             // Add framework services.
             services.AddMvc();
