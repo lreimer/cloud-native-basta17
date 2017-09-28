@@ -5,7 +5,7 @@ metadata:
 data:
   appsettings.json: |
     {
-      "message": "Hello K8s-only .NET Core",
+      "message": "Hello K8s-only .NET Core using ConfigMaps",
 
       "info": {
         "author": "Mario-Leander Reimer",
@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: cloud-native-basta17
-        image: "lreimer/cloud-native-basta17"
+        image: "lreimer/cloud-native-basta17:k8s-only"
         imagePullPolicy: Always
         resources:
           requests:
