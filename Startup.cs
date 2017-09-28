@@ -7,8 +7,6 @@ using QAware.OSS.Admin;
 using Steeltoe.Management.Endpoint.Health;
 using Steeltoe.Management.Endpoint.Health.Contributor;
 using Steeltoe.Management.Endpoint.Info;
-using Steeltoe.Discovery.Client;
-using Steeltoe.Extensions.Configuration;
 
 namespace QAware.OSS
 {
@@ -18,12 +16,12 @@ namespace QAware.OSS
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json", optional: false)
 
-                // add the Spring Cloud Config server
-                .AddConfigServer(env);
+                // additional appsettings.json mounted as volume inside container
+                .AddJsonFile("/config/appsettings.json", optional: true, reloadOnChange: true)
+                
+                .AddEnvironmentVariables();
             
             Configuration = builder.Build();
         }
@@ -42,11 +40,7 @@ namespace QAware.OSS
             services.AddSingleton<IInfoContributor, InfoContributor>();
 			services.AddInfoActuator(Configuration);
 
-            // ddd Steeltoe Discovery Client service to DI
-			services.AddDiscoveryClient(Configuration); 
-
             // add the config server service to DI
-            services.AddConfigServer(Configuration);
             services.AddSingleton<IConfigurationRoot>(Configuration);
             services.AddOptions();
 
@@ -67,9 +61,6 @@ namespace QAware.OSS
             app.UseDeveloperExceptionPage();
 
             app.UseMvc();
-
-			// Use the Steeltoe Discovery Client service
-			app.UseDiscoveryClient();
         }
     }
 }

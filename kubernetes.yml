@@ -1,129 +1,18 @@
 ﻿apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: eureka
-  labels:
-    app: eureka
-spec:
-  type: NodePort
-  ports:
-  - port: 8761
-  selector:
-    app: eureka
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: eureka
-spec:
-  replicas: 1
-  minReadySeconds: 60
-  template:
-    metadata:
-      labels:
-        app: eureka
-    spec:
-      containers:
-      - name: eureka
-        image: "lreimer/cloud-native-eureka"
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 8761
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: config-server
-  labels:
-    app: config-server
-spec:
-  type: NodePort
-  ports:
-  - port: 8888
-  selector:
-    app: config-server
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: config-server
-spec:
-  replicas: 1
-  minReadySeconds: 60
-  template:
-    metadata:
-      labels:
-        app: config-server
-    spec:
-      containers:
-      - name: config-server
-        image: "lreimer/cloud-native-config"
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 8888
-        env:
-        - name: EUREKA_HOST
-          value: eureka
-        - name: EUREKA_PORT
-          value: "8761"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zuul
-  labels:
-    app: zuul
-spec:
-  type: NodePort
-  ports:
-  - port: 8765
-  selector:
-    app: zuul
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: zuul
-spec:
-  replicas: 1
-  minReadySeconds: 60
-  template:
-    metadata:
-      labels:
-        app: zuul
-    spec:
-      containers:
-      - name: zuul
-        image: "lreimer/cloud-native-zuul"
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 8765
-        env:
-        - name: EUREKA_HOST
-          value: eureka
-        - name: EUREKA_PORT
-          value: "8761"
+  name: cloud-native-basta17-config
+data:
+  appsettings.json: |
+    {
+      "message": "Hello K8s-only .NET Core",
+
+      "info": {
+        "author": "Mario-Leander Reimer",
+        "company": "QAware GmbH",
+        "variant": "K8s-only"
+      }
+    }
 ---
 apiVersion: v1
 kind: Service
@@ -174,8 +63,11 @@ spec:
             path: /admin/info
             port: 5000
           timeoutSeconds: 10
-        env:
-        - name: EUREKA_HOST
-          value: eureka
-        - name: EUREKA_PORT
-          value: "8761"
+        volumeMounts:
+        - name: cloud-native-basta17-config-volume
+          mountPath: /config
+          readOnly: true
+      volumes:
+      - name: cloud-native-basta17-config-volume
+        configMap:
+          name: cloud-native-basta17-config
