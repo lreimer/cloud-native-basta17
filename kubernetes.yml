@@ -152,7 +152,7 @@ spec:
     spec:
       containers:
       - name: cloud-native-basta17
-        image: "lreimer/cloud-native-basta17"
+        image: "lreimer/cloud-native-basta17:master"
         imagePullPolicy: Always
         resources:
           requests:
