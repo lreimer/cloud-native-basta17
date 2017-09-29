@@ -47,6 +47,7 @@ $ docker-compose up --build
 - https://basta.net/microservices-services/cloud-native-net-microservices-mit-kubernetes/
 - http://steeltoe.io/docs/
 - https://github.com/SteeltoeOSS/Samples
+- https://speakerdeck.com/lreimer/cloud-native-net-microservices-mit-kubernetes-at-bastacon
 
 ## License
 
